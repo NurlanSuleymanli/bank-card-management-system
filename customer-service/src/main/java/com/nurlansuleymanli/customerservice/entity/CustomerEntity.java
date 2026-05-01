@@ -3,11 +3,19 @@ package com.nurlansuleymanli.customerservice.entity;
 
 import com.nurlansuleymanli.customerservice.model.enums.Status;
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "customers")
 public class CustomerEntity {
