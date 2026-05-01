@@ -2,6 +2,8 @@ package com.nurlansuleymanli.customerservice.controller;
 
 
 import com.nurlansuleymanli.customerservice.model.enums.dto.request.CustomerRequest;
+import com.nurlansuleymanli.customerservice.model.enums.dto.request.response.CustomerResponse;
+import com.nurlansuleymanli.customerservice.service.CustomerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,10 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CustomerController {
 
-    @PostMapping("/customers")
-    public ResponseEntity<?> createCustomer(@RequestBody CustomerRequest request){
+    CustomerService customerService;
 
-        return null;
+    @PostMapping("/customers")
+    public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerRequest request){
+        return ResponseEntity.ok(customerService.createCustomer(request));
     }
 
 
