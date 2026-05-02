@@ -3,6 +3,7 @@ package com.nurlansuleymanli.customerservice.service;
 import com.nurlansuleymanli.customerservice.entity.CustomerEntity;
 import com.nurlansuleymanli.customerservice.exception.CustomerExistException;
 import com.nurlansuleymanli.customerservice.mapper.CustomerMapper;
+import com.nurlansuleymanli.customerservice.model.enums.Status;
 import com.nurlansuleymanli.customerservice.model.enums.dto.request.CustomerRequest;
 import com.nurlansuleymanli.customerservice.model.enums.dto.request.response.CustomerResponse;
 import com.nurlansuleymanli.customerservice.repository.CustomerRepository;
@@ -31,6 +32,8 @@ public class CustomerService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .status(Status.ACTIVE)
                 .pin(request.getPin())
                 .build();
 

@@ -40,6 +40,7 @@ public class CustomerEntity {
     String pin;
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     Status status;
 
     @Column(name = "is_active")
