@@ -2,6 +2,7 @@ package com.nurlansuleymanli.customerservice.service;
 
 import com.nurlansuleymanli.customerservice.entity.CustomerEntity;
 import com.nurlansuleymanli.customerservice.exception.CustomerExistException;
+import com.nurlansuleymanli.customerservice.exception.CustomerNotFoundException;
 import com.nurlansuleymanli.customerservice.mapper.CustomerMapper;
 import com.nurlansuleymanli.customerservice.model.enums.Status;
 import com.nurlansuleymanli.customerservice.model.enums.dto.request.CustomerRequest;
@@ -41,6 +42,16 @@ public class CustomerService {
         customerRepository.save(customer);
 
         return customerMapper.toCustomerResponse(customer);
+
+    }
+
+
+    public CustomerResponse getCustomer(Long id){
+        if(customerRepository.findById(id).isEmpty()){
+            throw new CustomerNotFoundException("Customer not found!");
+        }
+
+        return customerMapper.toCustomerResponse(customerRepository.findById(id).get());
 
     }
 
