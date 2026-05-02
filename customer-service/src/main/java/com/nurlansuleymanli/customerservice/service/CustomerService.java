@@ -34,6 +34,7 @@ public class CustomerService {
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .status(Status.ACTIVE)
+                .isActive(true)
                 .pin(request.getPin())
                 .build();
 
