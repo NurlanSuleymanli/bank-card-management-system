@@ -7,14 +7,19 @@ import com.nurlansuleymanli.customerservice.service.CustomerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
 @RestController
 @RequestMapping("/api/v1")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class CustomerController {
 
     CustomerService customerService;
@@ -27,6 +32,15 @@ public class CustomerController {
     @GetMapping("/customers/{id}")
     public ResponseEntity<CustomerResponse> getCustomer(@PathVariable Long id){
         return ResponseEntity.ok(customerService.getCustomer(id));
+    }
+
+    @GetMapping("/customers")
+    public ResponseEntity<Page<CustomerResponse>> getAllCustomers
+            (@RequestParam(defaultValue = "0") int page,
+             @RequestParam(defaultValue = "10") int size){
+
+        return ResponseEntity.ok(customerService.getAllCustomers(page, size));
+
     }
 
 }

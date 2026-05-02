@@ -13,6 +13,9 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -53,6 +56,11 @@ public class CustomerService {
 
         return customerMapper.toCustomerResponse(customerRepository.findById(id).get());
 
+    }
+
+    public Page<CustomerResponse> getAllCustomers(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        return customerRepository.findAll(pageable).map((customerMapper::toCustomerResponse));
     }
 
 }
