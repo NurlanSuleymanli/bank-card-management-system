@@ -7,11 +7,9 @@ import com.nurlansuleymanli.customerservice.service.CustomerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,8 +21,12 @@ public class CustomerController {
 
     @PostMapping("/customers")
     public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerRequest request){
-        return ResponseEntity.ok(customerService.createCustomer(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(customerService.createCustomer(request));
     }
 
+    @GetMapping("/customers/{id}")
+    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable Long id){
+        return ResponseEntity.ok(customerService.getCustomer(Long id));
+    }
 
 }
