@@ -2,8 +2,10 @@ package com.nurlansuleymanli.customerservice.controller;
 
 
 import com.nurlansuleymanli.customerservice.model.enums.dto.request.CustomerRequest;
+import com.nurlansuleymanli.customerservice.model.enums.dto.request.UpdateCustomerRequest;
 import com.nurlansuleymanli.customerservice.model.enums.dto.request.response.CustomerResponse;
 import com.nurlansuleymanli.customerservice.service.CustomerService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,7 +27,7 @@ public class CustomerController {
     CustomerService customerService;
 
     @PostMapping("/customers")
-    public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerRequest request){
+    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.createCustomer(request));
     }
 
@@ -40,7 +42,12 @@ public class CustomerController {
              @RequestParam(defaultValue = "10") int size){
 
         return ResponseEntity.ok(customerService.getAllCustomers(page, size));
-
     }
+
+    @PutMapping("/customers/{id}")
+    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable Long id, @Valid @RequestBody UpdateCustomerRequest request){
+        return ResponseEntity.ok(customerService.updateCustomer(id,request));
+    }
+
 
 }
