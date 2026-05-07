@@ -1,9 +1,9 @@
 package com.nurlansuleymanli.customerservice.controller;
 
 
-import com.nurlansuleymanli.customerservice.model.enums.dto.request.CustomerRequest;
-import com.nurlansuleymanli.customerservice.model.enums.dto.request.UpdateCustomerRequest;
-import com.nurlansuleymanli.customerservice.model.enums.dto.request.response.CustomerResponse;
+import com.nurlansuleymanli.customerservice.model.dto.request.CustomerRequest;
+import com.nurlansuleymanli.customerservice.model.dto.request.UpdateCustomerRequest;
+import com.nurlansuleymanli.customerservice.model.dto.response.CustomerResponse;
 import com.nurlansuleymanli.customerservice.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
