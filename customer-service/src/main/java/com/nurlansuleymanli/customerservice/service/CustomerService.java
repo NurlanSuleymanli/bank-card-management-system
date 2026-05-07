@@ -84,9 +84,18 @@ public class CustomerService {
 
         return customerMapper.toCustomerResponse(customerEntity);
 
+    }
 
 
+    public CustomerResponse deleteCustomer(Long id){
 
+        CustomerEntity customer = customerRepository.findById(id).orElseThrow(()-> new CustomerNotFoundException("Customer not found!"));
+
+        customer.setActive(false);
+
+        customerRepository.save(customer);
+
+        return customerMapper.toCustomerResponse(customer);
     }
 
 }
