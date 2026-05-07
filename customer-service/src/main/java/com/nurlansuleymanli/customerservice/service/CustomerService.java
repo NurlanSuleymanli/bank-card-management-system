@@ -65,10 +65,10 @@ public class CustomerService {
         return customerRepository.findAll(pageable).map((customerMapper::toCustomerResponse));
     }
 
-    public CustomerResponse updateCustomer(Long id,UpdateCustomerRequest request){
+    public CustomerResponse updateCustomer(Long id, UpdateCustomerRequest request){
         CustomerEntity customerEntity= customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException("Customer not found!"));
 
-        if(request.getEmail() != null && customerEntity.getEmail().equals(request.getEmail())){
+        if(request.getEmail() != null && !customerEntity.getEmail().equals(request.getEmail())){
             if(customerRepository.findByEmail(request.getEmail()).isPresent()){
                 throw new EmailAlreadyExistException("Email is taken!");
             }
@@ -76,7 +76,7 @@ public class CustomerService {
 
         }
 
-        if(request.getPhoneNumber()!=null && customerEntity.getPhoneNumber().equals(request.getPhoneNumber())){
+        if(request.getPhoneNumber()!=null && !customerEntity.getPhoneNumber().equals(request.getPhoneNumber())){
             customerEntity.setPhoneNumber(request.getPhoneNumber());
         }
 
