@@ -43,9 +43,6 @@ public class CustomerEntity {
     @Enumerated(EnumType.STRING)
     Status status;
 
-    @Column(name = "is_active")
-    boolean isActive=true;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     LocalDateTime createdAt;

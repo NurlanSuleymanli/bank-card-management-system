@@ -14,6 +14,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 public class CustomerResponse {
 
+    Long id;
+
     String firstName;
 
     String lastName;

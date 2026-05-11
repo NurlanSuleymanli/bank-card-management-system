@@ -1,7 +1,6 @@
 package com.nurlansuleymanli.customerservice.service;
 
 import com.nurlansuleymanli.customerservice.entity.CustomerEntity;
-import com.nurlansuleymanli.customerservice.exception.CustomerExistException;
 import com.nurlansuleymanli.customerservice.exception.CustomerNotFoundException;
 import com.nurlansuleymanli.customerservice.exception.EmailAlreadyExistException;
 import com.nurlansuleymanli.customerservice.mapper.CustomerMapper;
@@ -11,7 +10,6 @@ import com.nurlansuleymanli.customerservice.model.dto.request.UpdateCustomerRequ
 import com.nurlansuleymanli.customerservice.model.dto.response.CustomerResponse;
 import com.nurlansuleymanli.customerservice.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,9 +27,9 @@ public class CustomerService {
     CustomerRepository customerRepository;
     CustomerMapper customerMapper;
 
-    public CustomerResponse createCustomer(@Valid CustomerRequest request){
+    public CustomerResponse createCustomer(CustomerRequest request){
         if (customerRepository.findByEmail(request.getEmail()).isPresent()){
-            throw new CustomerExistException("Customer is exist!");
+            throw new EmailAlreadyExistException("Email is exist!");
         }
 
         CustomerEntity customer= CustomerEntity.builder()
@@ -40,7 +38,6 @@ public class CustomerService {
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .status(Status.ACTIVE)
-                .isActive(true)
                 .pin(request.getPin())
                 .build();
 
@@ -52,11 +49,9 @@ public class CustomerService {
 
 
     public CustomerResponse getCustomer(Long id){
-        if(customerRepository.findById(id).isEmpty()){
-            throw new CustomerNotFoundException("Customer not found!");
-        }
+        CustomerEntity customer = customerRepository.findByIdAndStatus(id,Status.ACTIVE).orElseThrow(()-> new CustomerNotFoundException("Customer not found or customer is inactive!"));
 
-        return customerMapper.toCustomerResponse(customerRepository.findById(id).get());
+        return customerMapper.toCustomerResponse(customer);
 
     }
 
@@ -66,7 +61,7 @@ public class CustomerService {
     }
 
     public CustomerResponse updateCustomer(Long id, UpdateCustomerRequest request){
-        CustomerEntity customerEntity= customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException("Customer not found!"));
+        CustomerEntity customerEntity= customerRepository.findByIdAndStatus(id,Status.ACTIVE).orElseThrow(() -> new CustomerNotFoundException("Customer not found or customer is inactive!"));
 
         if(request.getEmail() != null && !customerEntity.getEmail().equals(request.getEmail())){
             if(customerRepository.findByEmail(request.getEmail()).isPresent()){
@@ -89,9 +84,9 @@ public class CustomerService {
 
     public CustomerResponse deleteCustomer(Long id){
 
-        CustomerEntity customer = customerRepository.findById(id).orElseThrow(()-> new CustomerNotFoundException("Customer not found!"));
+        CustomerEntity customer = customerRepository.findByIdAndStatus(id,Status.ACTIVE).orElseThrow(()-> new CustomerNotFoundException("Customer not found or customer is inactive!"));
 
-        customer.setActive(false);
+        customer.setStatus(Status.INACTIVE);
 
         customerRepository.save(customer);
 
