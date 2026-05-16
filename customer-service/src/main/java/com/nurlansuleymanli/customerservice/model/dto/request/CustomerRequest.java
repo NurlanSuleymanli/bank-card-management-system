@@ -33,6 +33,7 @@ public class CustomerRequest {
     String email;
 
     @NotBlank
+    @Pattern(regexp = "^[A-Z0-9]{7}$")
     String pin;
 
 

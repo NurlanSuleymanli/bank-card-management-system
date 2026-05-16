@@ -1,7 +1,6 @@
 package com.nurlansuleymanli.customerservice.model.dto.request;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -13,12 +12,12 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateCustomerRequest {
-    @NotBlank
+
     @Size(max = 32)
     @Pattern(regexp = "^\\+994(10|50|51|55|70|77|99)\\d{7}$")
     String phoneNumber;
 
-    @NotBlank
     @Email
+    @Size(min = 1)
     String email;
 }

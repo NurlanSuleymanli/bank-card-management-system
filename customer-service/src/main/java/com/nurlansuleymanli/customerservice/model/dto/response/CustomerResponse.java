@@ -1,8 +1,5 @@
 package com.nurlansuleymanli.customerservice.model.dto.response;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
