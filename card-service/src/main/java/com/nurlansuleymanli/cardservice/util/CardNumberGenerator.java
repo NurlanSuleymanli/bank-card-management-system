@@ -18,6 +18,12 @@ public class CardNumberGenerator {
         return cardNumber.toString();
     }
 
+    public static String generateCvv(){
+
+        return String.valueOf(random.nextInt(100,999));
+
+    }
+
 
 
 
