@@ -19,9 +19,9 @@ public class CardService {
 
     public CreateCardResponse createCard(CreateCardRequest request){
 
-        HttpEntity<?> http = (HttpEntity<?>) serviceClient.getCustomer(request.getCustomerId());
+//        HttpEntity<?> http = (HttpEntity<?>) serviceClient.getCustomer(request.getCustomerId());
 
-        
+
 
 }
 
