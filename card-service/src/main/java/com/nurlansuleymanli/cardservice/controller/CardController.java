@@ -1,6 +1,7 @@
 package com.nurlansuleymanli.cardservice.controller;
 
-import com.nurlansuleymanli.cardservice.modul.request.CreateCardRequest;
+import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
+import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
 import com.nurlansuleymanli.cardservice.service.CardService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

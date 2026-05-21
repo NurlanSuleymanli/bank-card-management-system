@@ -2,26 +2,59 @@ package com.nurlansuleymanli.cardservice.service;
 
 
 import com.nurlansuleymanli.cardservice.client.CustomerServiceClient;
-import com.nurlansuleymanli.cardservice.modul.request.CreateCardRequest;
+import com.nurlansuleymanli.cardservice.entity.CardEntity;
+import com.nurlansuleymanli.cardservice.mapper.CardMapper;
+import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
+import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
+import com.nurlansuleymanli.cardservice.modul.dto.response.CustomerInfoResponse;
+import com.nurlansuleymanli.cardservice.modul.enums.CardType;
+import com.nurlansuleymanli.cardservice.modul.enums.Status;
+import com.nurlansuleymanli.cardservice.repository.CardRepository;
+import com.nurlansuleymanli.cardservice.util.CardNumberGenerator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CardService {
 
+    PasswordEncoder passwordEncoder;
     CustomerServiceClient serviceClient;
+    CardRepository cardRepository;
+    CardMapper cardMapper;
 
     public CreateCardResponse createCard(CreateCardRequest request){
 
-//        HttpEntity<?> http = (HttpEntity<?>) serviceClient.getCustomer(request.getCustomerId());
+      CustomerInfoResponse customer = serviceClient.getCustomer(request.getCustomerId());
+
+      if((cardRepository.countCardEntitiesByCustomerId(customer.getId()))<3) {
 
 
+          if (request.getCardType().equals(CardType.DEBIT)) {
+
+              CardEntity card = CardEntity.builder()
+                      .cardNumber(CardNumberGenerator.generate())
+                      .cvv(passwordEncoder.encode(CardNumberGenerator.generateCvv()))
+                      .customerId(customer.getId())
+                      .cardType(CardType.DEBIT)
+                      .status(Status.ACTIVE)
+                      .balance(BigDecimal.valueOf(0))
+                      .expiryDate(LocalDate.now().plusYears(3))
+                      .build();
+
+              return cardMapper.toCreateCardResponse(card);
+
+
+          }
+
+      }
 
 }
 

@@ -1,4 +1,4 @@
-package com.nurlansuleymanli.cardservice.modul.request;
+package com.nurlansuleymanli.cardservice.modul.dto.request;
 
 import com.nurlansuleymanli.cardservice.modul.enums.CardType;
 import jakarta.validation.constraints.NotBlank;

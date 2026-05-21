@@ -1,4 +1,4 @@
-package com.nurlansuleymanli.cardservice.modul.response;
+package com.nurlansuleymanli.cardservice.modul.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
