@@ -14,3 +14,8 @@ spring:
 
 server:
   port: 8082
+
+feign:
+  client:
+    config:
+      url: localhost:8081/api/v1
