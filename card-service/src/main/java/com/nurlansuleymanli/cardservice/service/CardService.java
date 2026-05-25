@@ -51,6 +51,8 @@ public class CardService {
                       .expiryDate(LocalDate.now().plusYears(3))
                       .build();
 
+              cardRepository.save(card);
+
               return cardMapper.toCreateCardResponse(card);
 
 
@@ -68,6 +70,8 @@ public class CardService {
                       .balance(BigDecimal.valueOf(0))
                       .expiryDate(LocalDate.now().plusYears(3))
                       .build();
+
+              cardRepository.save(card);
 
               return cardMapper.toCreateCardResponse(card);
 
