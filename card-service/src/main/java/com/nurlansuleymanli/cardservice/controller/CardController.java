@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/cards")
 @RequiredArgsConstructor
@@ -21,13 +23,17 @@ public class CardController {
 
     @PostMapping
     public ResponseEntity<CreateCardResponse> createCard(@RequestBody CreateCardRequest request){
-        return ResponseEntity.status(HttpStatus.OK).body(cardService.createCard(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(cardService.createCard(request));
     }
-
 
     @GetMapping("/{cardId}")
     public ResponseEntity<CardResponse> getCard(@PathVariable Long cardId){
         return ResponseEntity.ok(cardService.getCard(cardId));
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<CardResponse>> getAllCardsByCustomer(@PathVariable Long customerId){
+        return ResponseEntity.ok(cardService.getAllCardsByCustomer(customerId);
     }
 
 }
