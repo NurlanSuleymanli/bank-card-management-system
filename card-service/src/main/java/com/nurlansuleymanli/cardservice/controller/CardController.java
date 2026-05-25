@@ -1,6 +1,7 @@
 package com.nurlansuleymanli.cardservice.controller;
 
 import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
+import com.nurlansuleymanli.cardservice.modul.dto.response.CardResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
 import com.nurlansuleymanli.cardservice.service.CardService;
 import lombok.AccessLevel;
@@ -23,7 +24,6 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.OK).body(cardService.createCard(request));
     }
 
-    //GET /api/v1/cards/{cardId} — Kart məlumatlarını qaytarır
 
     @GetMapping("/{cardId}")
     public ResponseEntity<CardResponse> getCard(@PathVariable Long cardId){

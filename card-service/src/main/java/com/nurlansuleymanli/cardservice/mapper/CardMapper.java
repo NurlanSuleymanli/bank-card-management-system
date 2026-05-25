@@ -1,6 +1,7 @@
 package com.nurlansuleymanli.cardservice.mapper;
 
 import com.nurlansuleymanli.cardservice.entity.CardEntity;
+import com.nurlansuleymanli.cardservice.modul.dto.response.CardResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
 import org.mapstruct.Mapper;
 
@@ -9,4 +10,5 @@ public interface CardMapper {
 
     CreateCardResponse toCreateCardResponse(CardEntity cardEntity);
 
+    CardResponse toCardResponse(CardEntity cardEntity);
 }
