@@ -110,5 +110,12 @@ public class CardService {
         cardRepository.save(card);
     }
 
+    public void activateCard(Long cardId){
+        CardEntity card = cardRepository.getCardEntityByIdAndStatus(cardId,Status.BLOCKED)
+                .orElseThrow(()-> new CardNotFoundException("Card not found!"));
+
+        card.setStatus(Status.ACTIVE);
+        cardRepository.save(card);
+    }
 
 }

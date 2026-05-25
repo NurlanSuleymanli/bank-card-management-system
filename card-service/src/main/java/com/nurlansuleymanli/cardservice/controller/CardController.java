@@ -41,4 +41,10 @@ public class CardController {
         cardService.blockCard(cardId);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{cardId}/activate")
+    public ResponseEntity<Void> activateCard(@PathVariable Long cardId){
+        cardService.activateCard(cardId);
+        return ResponseEntity.noContent().build();
+    }
 }
