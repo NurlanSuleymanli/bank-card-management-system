@@ -85,7 +85,7 @@ public class CardService {
 
     public CardResponse getCard(Long cardId){
 
-        CardEntity card = cardRepository.getCardEntityById(cardId).orElseThrow(()-> new CardNotFoundException("Card not found!"));
+        CardEntity card = cardRepository.getCardEntityByIdAndStatus(cardId,Status.ACTIVE).orElseThrow(()-> new CardNotFoundException("Card not found!"));
 
         return cardMapper.toCardResponse(card);
 
@@ -95,7 +95,7 @@ public class CardService {
     public List<CardResponse> getAllCardsByCustomer(Long customerId){
         CustomerInfoResponse customer = serviceClient.getCustomer(customerId);
 
-        return cardRepository.getCardEntitiesByCustomerId(customer.getId()).stream()
+        return cardRepository.getCardEntitiesByCustomerIdAndStatus(customer.getId(), Status.ACTIVE).stream()
                 .map(cardMapper::toCardResponse)
                 .toList();
 
