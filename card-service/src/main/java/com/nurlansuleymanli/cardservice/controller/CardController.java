@@ -33,7 +33,7 @@ public class CardController {
 
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<List<CardResponse>> getAllCardsByCustomer(@PathVariable Long customerId){
-        return ResponseEntity.ok(cardService.getAllCardsByCustomer(customerId);
+        return ResponseEntity.ok(cardService.getAllCardsByCustomer(customerId));
     }
 
 }

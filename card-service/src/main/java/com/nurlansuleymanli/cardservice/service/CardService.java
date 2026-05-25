@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -91,6 +92,14 @@ public class CardService {
     }
 
 
+    public List<CardResponse> getAllCardsByCustomer(Long customerId){
+        CustomerInfoResponse customer = serviceClient.getCustomer(customerId);
+
+        return cardRepository.getCardEntitiesByCustomerId(customer.getId()).stream()
+                .map(cardMapper::toCardResponse)
+                .toList();
+
+    }
 
 
 }
