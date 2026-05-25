@@ -5,6 +5,7 @@ import com.nurlansuleymanli.cardservice.client.CustomerServiceClient;
 import com.nurlansuleymanli.cardservice.entity.CardEntity;
 import com.nurlansuleymanli.cardservice.exception.CardLimitExceededException;
 import com.nurlansuleymanli.cardservice.exception.CardNotFoundException;
+import com.nurlansuleymanli.cardservice.exception.UnsupportedCardOperationException;
 import com.nurlansuleymanli.cardservice.mapper.CardMapper;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CardResponse;
@@ -116,6 +117,19 @@ public class CardService {
 
         card.setStatus(Status.ACTIVE);
         cardRepository.save(card);
+    }
+
+    public void refreshLimit(Long cardId){
+        CardEntity card = cardRepository.getCardEntityByIdAndStatus(cardId, Status.ACTIVE)
+                .orElseThrow(()->new CardNotFoundException("Card not found!"));
+
+        if (card.getCardType().equals(CardType.CREDIT)){
+            card.setCreditLimit(BigDecimal.valueOf(30000));
+            return;
+        }
+
+        throw new UnsupportedCardOperationException("Must have a credit card only!");
+
     }
 
 }

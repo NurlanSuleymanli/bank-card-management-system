@@ -47,4 +47,11 @@ public class CardController {
         cardService.activateCard(cardId);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("{cardId}/limit")
+    public ResponseEntity<Void> refreshLimit(@PathVariable Long cardId){
+        cardService.refreshLimit(cardId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
