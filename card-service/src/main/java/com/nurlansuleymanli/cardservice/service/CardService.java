@@ -3,6 +3,7 @@ package com.nurlansuleymanli.cardservice.service;
 
 import com.nurlansuleymanli.cardservice.client.CustomerServiceClient;
 import com.nurlansuleymanli.cardservice.entity.CardEntity;
+import com.nurlansuleymanli.cardservice.exception.CardLimitExceededException;
 import com.nurlansuleymanli.cardservice.mapper.CardMapper;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
@@ -36,7 +37,6 @@ public class CardService {
 
       if((cardRepository.countCardEntitiesByCustomerId(customer.getId()))<3) {
 
-
           if (request.getCardType().equals(CardType.DEBIT)) {
 
               CardEntity card = CardEntity.builder()
@@ -54,8 +54,25 @@ public class CardService {
 
           }
 
-      }
+          if(request.getCardType().equals(CardType.CREDIT)){
 
+              CardEntity card = CardEntity.builder()
+                      .cardNumber(CardNumberGenerator.generate())
+                      .cvv(passwordEncoder.encode(CardNumberGenerator.generateCvv()))
+                      .customerId(customer.getId())
+                      .cardType(CardType.CREDIT)
+                      .creditLimit(BigDecimal.valueOf(30000))
+                      .status(Status.ACTIVE)
+                      .balance(BigDecimal.valueOf(0))
+                      .expiryDate(LocalDate.now().plusYears(3))
+                      .build();
+
+              return cardMapper.toCreateCardResponse(card);
+
+          }
+
+      }
+          throw new CardLimitExceededException(" Card limit exceeded!");
 }
 
 }
