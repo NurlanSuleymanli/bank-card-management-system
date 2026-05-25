@@ -36,4 +36,9 @@ public class CardController {
         return ResponseEntity.ok(cardService.getAllCardsByCustomer(customerId));
     }
 
+    @PatchMapping("/{cardId}/block")
+    public ResponseEntity<Void> blockCard(@PathVariable Long cardId){
+        cardService.blockCard(cardId);
+        return ResponseEntity.noContent().build();
+    }
 }

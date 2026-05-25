@@ -14,6 +14,7 @@ import com.nurlansuleymanli.cardservice.modul.enums.CardType;
 import com.nurlansuleymanli.cardservice.modul.enums.Status;
 import com.nurlansuleymanli.cardservice.repository.CardRepository;
 import com.nurlansuleymanli.cardservice.util.CardNumberGenerator;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -99,6 +100,14 @@ public class CardService {
                 .map(cardMapper::toCardResponse)
                 .toList();
 
+    }
+
+    public void blockCard(Long cardId){
+        CardEntity card = cardRepository.getCardEntityByIdAndStatus(cardId,Status.ACTIVE)
+                .orElseThrow(()-> new CardNotFoundException("Card not found!"));
+
+        card.setStatus(Status.BLOCKED);
+        cardRepository.save(card);
     }
 
 
