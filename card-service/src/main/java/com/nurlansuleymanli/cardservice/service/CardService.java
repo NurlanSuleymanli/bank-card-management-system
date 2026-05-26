@@ -74,7 +74,7 @@ public class CardService {
     public List<CardResponse> getAllCardsByCustomer(Long customerId){
         CustomerInfoResponse customer = serviceClient.getCustomer(customerId);
 
-        return cardRepository.getCardEntitiesByCustomerIdAndStatus(customer.getId(), Status.ACTIVE).stream()
+        return cardRepository.getCardEntitiesByCustomerIdAndStatusIn(customer.getId(), List.of(Status.ACTIVE,Status.BLOCKED)).stream()
                 .map(cardMapper::toCardResponse)
                 .toList();
 
