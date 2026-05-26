@@ -72,41 +72,61 @@ public class CardService {
 
 
     public List<CardResponse> getAllCardsByCustomer(Long customerId){
-        CustomerInfoResponse customer = serviceClient.getCustomer(customerId);
 
-        return cardRepository.getCardEntitiesByCustomerIdAndStatusIn(customer.getId(), List.of(Status.ACTIVE,Status.BLOCKED)).stream()
+        return cardRepository.getCardEntitiesByCustomerIdAndStatusIn(customerId, List.of(Status.ACTIVE,Status.BLOCKED, Status.EXPIRED)).stream()
                 .map(cardMapper::toCardResponse)
                 .toList();
 
     }
 
     public void blockCard(Long cardId){
-        CardEntity card = cardRepository.getCardEntityByIdAndStatus(cardId,Status.ACTIVE)
+        CardEntity card = cardRepository.getCardEntityById(cardId)
                 .orElseThrow(()-> new CardNotFoundException("Card not found!"));
+
+        if (card.getStatus() == Status.BLOCKED) {
+            throw new UnsupportedCardOperationException("Card is already blocked!");
+        }
+        if (card.getStatus() == Status.CLOSED || card.getStatus() == Status.EXPIRED) {
+            throw new UnsupportedCardOperationException("Cannot block a closed or expired card!");
+        }
 
         card.setStatus(Status.BLOCKED);
         cardRepository.save(card);
     }
 
     public void activateCard(Long cardId){
-        CardEntity card = cardRepository.getCardEntityByIdAndStatus(cardId,Status.BLOCKED)
+        CardEntity card = cardRepository.getCardEntityById(cardId)
                 .orElseThrow(()-> new CardNotFoundException("Card not found!"));
+
+        if (card.getStatus() == Status.ACTIVE) {
+            throw new UnsupportedCardOperationException("Card is already active!");
+        }
+        if (card.getStatus() == Status.CLOSED || card.getStatus() == Status.EXPIRED) {
+            throw new UnsupportedCardOperationException("Cannot activate a closed or expired card!");
+        }
+        if (card.getExpiryDate().isBefore(LocalDate.now())) {
+            card.setStatus(Status.EXPIRED);
+            cardRepository.save(card);
+            throw new UnsupportedCardOperationException("Card has expired. Please request a new card.");
+        }
 
         card.setStatus(Status.ACTIVE);
         cardRepository.save(card);
     }
 
     public void refreshLimit(Long cardId){
-        CardEntity card = cardRepository.getCardEntityByIdAndStatus(cardId, Status.ACTIVE)
+        CardEntity card = cardRepository.getCardEntityById(cardId)
                 .orElseThrow(()->new CardNotFoundException("Card not found!"));
 
-        if (card.getCardType().equals(CardType.CREDIT)){
-            card.setCreditLimit(BigDecimal.valueOf(30000));
-            cardRepository.save(card);
-            return;
+        if (card.getStatus() == Status.CLOSED || card.getStatus() == Status.EXPIRED) {
+            throw new UnsupportedCardOperationException("Cannot update limit of closed/expired card!");
+        }
+        if (!card.getCardType().equals(CardType.CREDIT)) {
+            throw new UnsupportedCardOperationException("Credit limit can only be set for CREDIT cards!");
         }
 
-        throw new UnsupportedCardOperationException("Must have a credit card only!");
+            card.setCreditLimit(BigDecimal.valueOf(30000));
+            cardRepository.save(card);
 
     }
 
