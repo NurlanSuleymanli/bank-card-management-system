@@ -14,7 +14,7 @@ public class CreateCardResponse {
 
     Long id;
     String cardNumber;
-    String customerId;
+    Long customerId;
     CardType cardType;
     BigDecimal balance;
     LocalDate expiryDate;

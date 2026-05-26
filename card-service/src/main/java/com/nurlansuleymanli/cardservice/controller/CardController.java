@@ -48,10 +48,12 @@ public class CardController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("{cardId}/limit")
+    @PatchMapping("/{cardId}/limit")
     public ResponseEntity<Void> refreshLimit(@PathVariable Long cardId){
         cardService.refreshLimit(cardId);
         return ResponseEntity.noContent().build();
     }
+
+    //POST /api/v1/cards/{cardId}/payment — Kartdan ödəniş edir
 
 }

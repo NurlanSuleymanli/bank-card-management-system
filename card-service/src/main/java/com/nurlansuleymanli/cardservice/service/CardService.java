@@ -15,7 +15,6 @@ import com.nurlansuleymanli.cardservice.modul.enums.CardType;
 import com.nurlansuleymanli.cardservice.modul.enums.Status;
 import com.nurlansuleymanli.cardservice.repository.CardRepository;
 import com.nurlansuleymanli.cardservice.util.CardNumberGenerator;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -125,6 +124,7 @@ public class CardService {
 
         if (card.getCardType().equals(CardType.CREDIT)){
             card.setCreditLimit(BigDecimal.valueOf(30000));
+            cardRepository.save(card);
             return;
         }
 
