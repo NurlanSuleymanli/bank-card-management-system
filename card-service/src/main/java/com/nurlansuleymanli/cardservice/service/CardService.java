@@ -39,48 +39,26 @@ public class CardService {
 
       CustomerInfoResponse customer = serviceClient.getCustomer(request.getCustomerId());
 
-      if((cardRepository.countCardEntitiesByCustomerId(customer.getId()))<3) {
-
-          if (request.getCardType().equals(CardType.DEBIT)) {
-
-              CardEntity card = CardEntity.builder()
-                      .cardNumber(CardNumberGenerator.generate())
-                      .cvv(passwordEncoder.encode(CardNumberGenerator.generateCvv()))
-                      .customerId(customer.getId())
-                      .cardType(CardType.DEBIT)
-                      .status(Status.ACTIVE)
-                      .balance(BigDecimal.valueOf(0))
-                      .expiryDate(LocalDate.now().plusYears(3))
-                      .build();
-
-              cardRepository.save(card);
-
-              return cardMapper.toCreateCardResponse(card);
-
-
-          }
-
-          if(request.getCardType().equals(CardType.CREDIT)){
-
-              CardEntity card = CardEntity.builder()
-                      .cardNumber(CardNumberGenerator.generate())
-                      .cvv(passwordEncoder.encode(CardNumberGenerator.generateCvv()))
-                      .customerId(customer.getId())
-                      .cardType(CardType.CREDIT)
-                      .creditLimit(BigDecimal.valueOf(30000))
-                      .status(Status.ACTIVE)
-                      .balance(BigDecimal.valueOf(0))
-                      .expiryDate(LocalDate.now().plusYears(3))
-                      .build();
-
-              cardRepository.save(card);
-
-              return cardMapper.toCreateCardResponse(card);
-
-          }
-
-      }
+      if((cardRepository.countCardEntitiesByCustomerIdAndStatusIn(customer.getId(),List.of(Status.ACTIVE,Status.BLOCKED)))>=3) {
           throw new CardLimitExceededException(" Card limit exceeded!");
+      }
+
+              CardEntity card = CardEntity.builder()
+                      .cardNumber(CardNumberGenerator.generate())
+                      .cvv(passwordEncoder.encode(CardNumberGenerator.generateCvv()))
+                      .customerId(customer.getId())
+                      .cardType(request.getCardType())
+                      .status(Status.ACTIVE)
+                      .balance(BigDecimal.valueOf(0))
+                      .creditLimit(request.getCardType()==CardType.CREDIT ? BigDecimal.valueOf(30000): null)
+                      .expiryDate(LocalDate.now().plusYears(3))
+                      .build();
+
+              cardRepository.save(card);
+
+              return cardMapper.toCreateCardResponse(card);
+
+
 }
 
 
