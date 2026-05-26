@@ -16,7 +16,7 @@ public interface CardRepository extends JpaRepository<CardEntity, Long> {
 
     int countCardEntitiesByCustomerIdAndStatusIn(Long customerId, Collection<Status> statuses);
 
-    Optional<CardEntity> getCardEntityByIdAndStatus(Long id, Status status);
+    Optional<CardEntity> getCardEntityByIdAndStatusIn(Long id, Collection<Status> statuses);
 
     List<CardEntity> getCardEntitiesByCustomerIdAndStatus(Long customerId, Status status);
 }

@@ -64,7 +64,7 @@ public class CardService {
 
     public CardResponse getCard(Long cardId){
 
-        CardEntity card = cardRepository.getCardEntityByIdAndStatus(cardId,Status.ACTIVE).orElseThrow(()-> new CardNotFoundException("Card not found!"));
+        CardEntity card = cardRepository.getCardEntityByIdAndStatusIn(cardId,List.of(Status.ACTIVE,Status.BLOCKED)).orElseThrow(()-> new CardNotFoundException("Card not found!"));
 
         return cardMapper.toCardResponse(card);
 
