@@ -76,11 +76,10 @@ public class CardService {
         return cardRepository.getCardEntitiesByCustomerIdAndStatusIn(customerId, List.of(Status.ACTIVE,Status.BLOCKED, Status.EXPIRED)).stream()
                 .map(cardMapper::toCardResponse)
                 .toList();
-
     }
 
     public void blockCard(Long cardId){
-        CardEntity card = cardRepository.getCardEntityById(cardId)
+        CardEntity card = cardRepository.findById(cardId)
                 .orElseThrow(()-> new CardNotFoundException("Card not found!"));
 
         if (card.getStatus() == Status.BLOCKED) {
@@ -95,7 +94,7 @@ public class CardService {
     }
 
     public void activateCard(Long cardId){
-        CardEntity card = cardRepository.getCardEntityById(cardId)
+        CardEntity card = cardRepository.findById(cardId)
                 .orElseThrow(()-> new CardNotFoundException("Card not found!"));
 
         if (card.getStatus() == Status.ACTIVE) {
@@ -115,7 +114,7 @@ public class CardService {
     }
 
     public void refreshLimit(Long cardId){
-        CardEntity card = cardRepository.getCardEntityById(cardId)
+        CardEntity card = cardRepository.findById(cardId)
                 .orElseThrow(()->new CardNotFoundException("Card not found!"));
 
         if (card.getStatus() == Status.CLOSED || card.getStatus() == Status.EXPIRED) {

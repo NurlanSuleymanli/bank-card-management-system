@@ -4,6 +4,7 @@ import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CardResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
 import com.nurlansuleymanli.cardservice.service.CardService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +23,7 @@ public class CardController {
     CardService cardService;
 
     @PostMapping
-    public ResponseEntity<CreateCardResponse> createCard(@RequestBody CreateCardRequest request){
+    public ResponseEntity<CreateCardResponse> createCard(@Valid @RequestBody CreateCardRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(cardService.createCard(request));
     }
 

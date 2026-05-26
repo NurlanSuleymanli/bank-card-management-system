@@ -1,6 +1,5 @@
 package com.nurlansuleymanli.cardservice.repository;
 
-import com.fasterxml.jackson.annotation.OptBoolean;
 import com.nurlansuleymanli.cardservice.entity.CardEntity;
 import com.nurlansuleymanli.cardservice.modul.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,6 +19,4 @@ public interface CardRepository extends JpaRepository<CardEntity, Long> {
 
     List<CardEntity> getCardEntitiesByCustomerIdAndStatusIn(Long customerId, Collection<Status> statuses);
 
-    Optional<CardEntity> getCardEntityById(Long id);
-    
 }
