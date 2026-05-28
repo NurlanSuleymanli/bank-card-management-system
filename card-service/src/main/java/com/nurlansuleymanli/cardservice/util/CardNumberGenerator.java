@@ -1,11 +1,12 @@
 package com.nurlansuleymanli.cardservice.util;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 public class CardNumberGenerator {
 
     private static final String number= "54117388";
-    private static final Random random= new Random();
+    private static final SecureRandom random= new SecureRandom();
 
 
     public static String generate(){
@@ -20,7 +21,7 @@ public class CardNumberGenerator {
 
     public static String generateCvv(){
 
-        return String.valueOf(random.nextInt(100,999));
+        return String.valueOf(random.nextInt(0,1000));
 
     }
 
