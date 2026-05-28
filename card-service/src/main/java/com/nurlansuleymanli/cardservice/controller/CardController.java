@@ -60,7 +60,7 @@ public class CardController {
     @PostMapping("/{cardId}/payment")
     public ResponseEntity<CardPaymentResponse> payment(@PathVariable Long cardId,
                                                        @Valid @RequestBody CardPaymentRequest request){
-
+        return ResponseEntity.ok(cardService.payment(cardId,request));
     }
 
 }

@@ -7,11 +7,14 @@ import com.nurlansuleymanli.cardservice.exception.CardLimitExceededException;
 import com.nurlansuleymanli.cardservice.exception.CardNotFoundException;
 import com.nurlansuleymanli.cardservice.exception.UnsupportedCardOperationException;
 import com.nurlansuleymanli.cardservice.mapper.CardMapper;
+import com.nurlansuleymanli.cardservice.modul.dto.request.CardPaymentRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
+import com.nurlansuleymanli.cardservice.modul.dto.response.CardPaymentResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CardResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CustomerInfoResponse;
 import com.nurlansuleymanli.cardservice.modul.enums.CardType;
+import com.nurlansuleymanli.cardservice.modul.enums.PaymentStatus;
 import com.nurlansuleymanli.cardservice.modul.enums.Status;
 import com.nurlansuleymanli.cardservice.repository.CardRepository;
 import com.nurlansuleymanli.cardservice.util.CardNumberGenerator;
@@ -20,14 +23,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Transactional
 public class CardService {
 
     PasswordEncoder passwordEncoder;
@@ -120,13 +126,57 @@ public class CardService {
         if (card.getStatus() == Status.CLOSED || card.getStatus() == Status.EXPIRED) {
             throw new UnsupportedCardOperationException("Cannot update limit of closed/expired card!");
         }
-        if (!card.getCardType().equals(CardType.CREDIT)) {
+        if (!(card.getCardType() == CardType.CREDIT)) {
             throw new UnsupportedCardOperationException("Credit limit can only be set for CREDIT cards!");
         }
 
             card.setCreditLimit(BigDecimal.valueOf(30000));
             cardRepository.save(card);
 
+    }
+
+    public CardPaymentResponse payment(Long cardId, CardPaymentRequest request){
+
+        CardEntity card = cardRepository.findById(cardId).orElseThrow(()-> new CardNotFoundException("Card not found!"));
+
+        if(card.getStatus()==Status.ACTIVE) {
+
+            if (card.getCardType() == CardType.DEBIT) {
+                if (card.getBalance().compareTo(request.getAmount()) < 0) {
+                    throw new UnsupportedCardOperationException("The payment amount is more than the balance!");
+                }
+
+                card.setBalance(card.getBalance().subtract(request.getAmount()));
+                cardRepository.save(card);
+                return CardPaymentResponse.builder()
+                        .message("The payment was successfully carried out!")
+                        .status(PaymentStatus.SUCCESS)
+                        .dateTime(LocalDateTime.now())
+                        .build();
+
+            }
+            if (card.getCardType() == CardType.CREDIT) {
+                if (card.getCreditLimit().compareTo(request.getAmount()) < 0) {
+                    throw new UnsupportedCardOperationException("Insufficient credit limit!");
+                }
+                card.setBalance(card.getBalance().subtract(request.getAmount()));
+                card.setCreditLimit(card.getCreditLimit().subtract(request.getAmount()));
+                cardRepository.save(card);
+                return CardPaymentResponse.builder()
+                        .message("The payment was successfully carried out!")
+                        .status(PaymentStatus.SUCCESS)
+                        .dateTime(LocalDateTime.now())
+                        .build();
+            }
+        }
+        else{
+            throw new UnsupportedCardOperationException("Payment is only made through active cards!");
+        }
+            return CardPaymentResponse.builder()
+                    .status(PaymentStatus.FAILED)
+                    .message("The payment was unsuccessful!")
+                    .dateTime(LocalDateTime.now())
+                    .build();
     }
 
 }
