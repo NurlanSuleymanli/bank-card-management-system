@@ -1,6 +1,8 @@
 package com.nurlansuleymanli.cardservice.controller;
 
+import com.nurlansuleymanli.cardservice.modul.dto.request.CardPaymentRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
+import com.nurlansuleymanli.cardservice.modul.dto.response.CardPaymentResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CardResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
 import com.nurlansuleymanli.cardservice.service.CardService;
@@ -55,6 +57,10 @@ public class CardController {
         return ResponseEntity.noContent().build();
     }
 
-    //POST /api/v1/cards/{cardId}/payment — Kartdan ödəniş edir
+    @PostMapping("/{cardId}/payment")
+    public ResponseEntity<CardPaymentResponse> payment(@PathVariable Long cardId,
+                                                       @Valid @RequestBody CardPaymentRequest request){
+
+    }
 
 }
