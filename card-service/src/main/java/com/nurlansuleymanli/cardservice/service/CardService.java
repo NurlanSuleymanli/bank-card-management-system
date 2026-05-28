@@ -5,6 +5,7 @@ import com.nurlansuleymanli.cardservice.client.CustomerServiceClient;
 import com.nurlansuleymanli.cardservice.entity.CardEntity;
 import com.nurlansuleymanli.cardservice.exception.CardLimitExceededException;
 import com.nurlansuleymanli.cardservice.exception.CardNotFoundException;
+import com.nurlansuleymanli.cardservice.exception.CardNumberGeneratorException;
 import com.nurlansuleymanli.cardservice.exception.UnsupportedCardOperationException;
 import com.nurlansuleymanli.cardservice.mapper.CardMapper;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CardPaymentRequest;
@@ -33,7 +34,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Transactional(readOnly = true)
+@Transactional
 public class CardService {
 
     PasswordEncoder passwordEncoder;
@@ -59,6 +60,16 @@ public class CardService {
                       .creditLimit(request.getCardType()==CardType.CREDIT ? BigDecimal.valueOf(30000): null)
                       .expiryDate(LocalDate.now().plusYears(3))
                       .build();
+        for (int i = 0; i < 5; i++) {
+            if(!cardRepository.existsCardEntitiesByCardNumber(card.getCardNumber())){
+                break;
+            }
+            card.setCardNumber(CardNumberGenerator.generate());
+        }
+
+        if(cardRepository.existsCardEntitiesByCardNumber(card.getCardNumber())){
+            throw new CardNumberGeneratorException("Card number generate is failed, please try again!");
+        }
 
               cardRepository.save(card);
 
