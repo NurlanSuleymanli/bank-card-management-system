@@ -1,7 +1,6 @@
 package com.nurlansuleymanli.cardservice.util;
 
 import java.security.SecureRandom;
-import java.util.Random;
 
 public class CardNumberGenerator {
 
