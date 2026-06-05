@@ -1,12 +1,16 @@
 package com.nurlansuleymanli.transactionservice.controller;
 
-
+import com.nurlansuleymanli.transactionservice.model.dto.request.TransactionRequest;
+import com.nurlansuleymanli.transactionservice.model.dto.response.TransactionResponse;
+import com.nurlansuleymanli.transactionservice.service.TransactionService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
@@ -17,5 +21,13 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @RequestMapping("/api/v1/transactions")
 public class TransactionController {
 
+    TransactionService transactionService;
 
+    @PostMapping
+    public ResponseEntity<TransactionResponse> createTransaction(
+            @RequestBody @Valid TransactionRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(transactionService.createTransaction(request));
+    }
 }
+
