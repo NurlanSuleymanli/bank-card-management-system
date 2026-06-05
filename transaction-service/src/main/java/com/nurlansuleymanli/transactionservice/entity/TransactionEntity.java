@@ -3,10 +3,10 @@ package com.nurlansuleymanli.transactionservice.entity;
 import com.nurlansuleymanli.transactionservice.model.enums.TransactionStatus;
 import com.nurlansuleymanli.transactionservice.model.enums.TransactionType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,31 +16,40 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "transactions")
 public class TransactionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(nullable = false)
-    private Long cardId;
+    Long cardId;
 
     @Column(nullable = false, precision = 19, scale = 4)
-    private BigDecimal amount;
+    BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionType type;
+    TransactionType type;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionStatus status;
+    TransactionStatus status;
 
     @Column(length = 500)
-    private String description;
+    String description;
 
     @Column(nullable = false)
-    private LocalDateTime transactionDate;
+    LocalDateTime transactionDate;
+
+    @Column(name = "updated_at", nullable = false, updatable = false)
+    @UpdateTimestamp
+    LocalDateTime updatedAt;
+
+    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    LocalDateTime createdAt;
 
 }
