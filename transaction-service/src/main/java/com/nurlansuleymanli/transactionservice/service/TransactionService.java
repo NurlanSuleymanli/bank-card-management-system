@@ -30,7 +30,7 @@ public class TransactionService {
                 .type(request.getType())
                 .status(TransactionStatus.PENDING)
                 .description(request.getDescription())
-                .transactionDate(LocalDateTime.now())
+                .transactionDate(request.getTransactionDate())
                 .build();
 
         transactionRepository.save(entity);

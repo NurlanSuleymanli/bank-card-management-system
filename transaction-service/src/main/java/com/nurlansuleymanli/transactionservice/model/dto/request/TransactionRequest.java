@@ -26,4 +26,6 @@ public class TransactionRequest {
     TransactionType type;
     @NotBlank
     String description;
+    @NotNull
+    LocalDateTime transactionDate;
 }
