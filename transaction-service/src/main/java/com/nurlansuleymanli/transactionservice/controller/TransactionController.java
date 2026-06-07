@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.time.LocalDateTime;
+
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
 @RestController
@@ -42,6 +45,15 @@ public class TransactionController {
                                                                          @RequestParam(defaultValue = "10") int size){
 
         return ResponseEntity.ok(transactionService.getCardTransactions(cardId,page,size));
+    }
+
+    @GetMapping("/card/{cardId}/filter")
+    public ResponseEntity<Page<TransactionResponse>> getCardTransactionsWithFiltering(@PathVariable Long cardId,
+                                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                                      @RequestParam(defaultValue = "10") int size,
+                                                                                      @RequestParam LocalDateTime from,
+                                                                                      @RequestParam LocalDateTime to){
+        return ResponseEntity.ok(transactionService.getCardTransactionsWithFiltering(cardId,page,size,from,to));
     }
 
 }
