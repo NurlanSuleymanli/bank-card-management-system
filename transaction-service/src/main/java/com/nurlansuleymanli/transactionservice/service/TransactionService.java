@@ -1,6 +1,7 @@
 package com.nurlansuleymanli.transactionservice.service;
 
 import com.nurlansuleymanli.transactionservice.entity.TransactionEntity;
+import com.nurlansuleymanli.transactionservice.exception.TransactionNotFoundException;
 import com.nurlansuleymanli.transactionservice.mapper.TransactionMapper;
 import com.nurlansuleymanli.transactionservice.model.dto.request.TransactionRequest;
 import com.nurlansuleymanli.transactionservice.model.dto.response.TransactionResponse;
@@ -12,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -37,5 +37,13 @@ public class TransactionService {
 
         return transactionMapper.toTransactionResponse(entity);
     }
+
+    public TransactionResponse getTransaction(Long id){
+
+        return transactionMapper.toTransactionResponse(transactionRepository.findById(id)
+                .orElseThrow(()->new TransactionNotFoundException("Transaction not found!")));
+
+    }
+
 }
 

@@ -29,5 +29,12 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(transactionService.createTransaction(request));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TransactionResponse> getTransaction(@PathVariable Long id){
+        return ResponseEntity.ok(transactionService.getTransaction(id));
+    }
+
+
 }
 
