@@ -10,6 +10,9 @@ import com.nurlansuleymanli.transactionservice.repository.TransactionRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +46,14 @@ public class TransactionService {
         return transactionMapper.toTransactionResponse(transactionRepository.findById(id)
                 .orElseThrow(()->new TransactionNotFoundException("Transaction not found!")));
 
+    }
+
+    public Page<TransactionResponse> getCardTransactions(Long cardId, int page, int size){
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        return transactionRepository.findByCardId(cardId,pageable)
+                .map(transactionMapper::toTransactionResponse);
     }
 
 }

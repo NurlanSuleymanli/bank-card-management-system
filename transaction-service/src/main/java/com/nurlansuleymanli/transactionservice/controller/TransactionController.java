@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,13 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getTransaction(id));
     }
 
+    @GetMapping("/card/{cardId}")
+    public ResponseEntity<Page<TransactionResponse>> getCardTransactions(@PathVariable Long cardId,
+                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                         @RequestParam(defaultValue = "10") int size){
+
+        return ResponseEntity.ok(transactionService.getCardTransactions(cardId,page,size));
+    }
 
 }
 

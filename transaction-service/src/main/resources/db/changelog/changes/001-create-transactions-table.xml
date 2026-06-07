@@ -27,11 +27,11 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="transaction_type" type="VARCHAR(50)">
+            <column name="type" type="VARCHAR(50)">
                 <constraints nullable="false" />
             </column>
 
-            <column name="transaction_status" type="VARCHAR(50)">
+            <column name="status" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
 

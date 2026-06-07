@@ -44,11 +44,11 @@ public class TransactionEntity {
     @Column(nullable = false)
     LocalDateTime transactionDate;
 
-    @Column(name = "updated_at", nullable = false, updatable = false)
+    @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp
     LocalDateTime updatedAt;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     LocalDateTime createdAt;
 
