@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -33,7 +34,7 @@ public class GlobalExceptionHandler {
 
         String details = e.getBindingResult().getFieldErrors().stream()
                 .map(fe -> "'" + fe.getField() + "': " + fe.getDefaultMessage())
-                .collect(java.util.stream.Collectors.joining("; "));
+                .collect(Collectors.joining("; "));
 
         String message = details.isBlank()
                 ? "The submitted data is invalid. Please check your input and try again."
