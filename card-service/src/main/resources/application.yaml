@@ -3,7 +3,7 @@ spring:
     name: card-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/card_db
+    url: jdbc:postgresql://localhost:5433/card_db
     username: postgres
     password: postgres
 
