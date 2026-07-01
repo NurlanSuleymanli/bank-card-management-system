@@ -1,7 +1,9 @@
 package com.nurlansuleymanli.cardservice.controller;
 
+import com.nurlansuleymanli.cardservice.modul.dto.request.CardDepositRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CardPaymentRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
+import com.nurlansuleymanli.cardservice.modul.dto.response.CardDepositResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CardPaymentResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CardResponse;
 import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
@@ -61,6 +63,12 @@ public class CardController {
     public ResponseEntity<CardPaymentResponse> payment(@PathVariable Long cardId,
                                                        @Valid @RequestBody CardPaymentRequest request){
         return ResponseEntity.ok(cardService.payment(cardId,request));
+    }
+
+    @PostMapping("{cardId}/deposit")
+    public ResponseEntity<CardDepositResponse> deposit(@PathVariable Long cardId,
+                                                       @Valid @RequestBody CardDepositRequest request){
+        return ResponseEntity.ok(cardService.deposit(cardId,request));
     }
 
 }
