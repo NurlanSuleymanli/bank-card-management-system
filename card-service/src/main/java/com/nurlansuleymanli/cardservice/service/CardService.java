@@ -8,12 +8,10 @@ import com.nurlansuleymanli.cardservice.exception.CardNotFoundException;
 import com.nurlansuleymanli.cardservice.exception.CardNumberGeneratorException;
 import com.nurlansuleymanli.cardservice.exception.UnsupportedCardOperationException;
 import com.nurlansuleymanli.cardservice.mapper.CardMapper;
+import com.nurlansuleymanli.cardservice.modul.dto.request.CardDepositRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CardPaymentRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
-import com.nurlansuleymanli.cardservice.modul.dto.response.CardPaymentResponse;
-import com.nurlansuleymanli.cardservice.modul.dto.response.CardResponse;
-import com.nurlansuleymanli.cardservice.modul.dto.response.CreateCardResponse;
-import com.nurlansuleymanli.cardservice.modul.dto.response.CustomerInfoResponse;
+import com.nurlansuleymanli.cardservice.modul.dto.response.*;
 import com.nurlansuleymanli.cardservice.modul.enums.CardType;
 import com.nurlansuleymanli.cardservice.modul.enums.PaymentStatus;
 import com.nurlansuleymanli.cardservice.modul.enums.Status;
@@ -188,6 +186,24 @@ public class CardService {
                     .message("The payment was unsuccessful!")
                     .dateTime(LocalDateTime.now())
                     .build();
+    }
+
+    public CardDepositResponse deposit(Long cardId, CardDepositRequest request){
+
+        CardEntity card = cardRepository.findById(cardId).orElseThrow(()-> new CardNotFoundException("Card not found!"));
+
+        if(card.getStatus()!=Status.ACTIVE){
+            throw new UnsupportedCardOperationException("Deposit is only made through active cards!");
+        }
+
+        card.setBalance(card.getBalance().add(request.getAmount()));
+        cardRepository.save(card);
+
+        return CardDepositResponse.builder()
+                .message("Balance successfully topped up!")
+                .newBalance(card.getBalance())
+                .dateTime(LocalDateTime.now())
+                .build();
     }
 
 }

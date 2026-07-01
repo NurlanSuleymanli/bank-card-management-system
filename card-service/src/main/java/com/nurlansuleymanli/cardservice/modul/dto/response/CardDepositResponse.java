@@ -3,6 +3,7 @@ package com.nurlansuleymanli.cardservice.modul.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
@@ -13,6 +14,6 @@ import java.time.LocalDateTime;
 public class CardDepositResponse {
 
     String message;
-    Double newBalance;
+    BigDecimal newBalance;
     LocalDateTime dateTime;
 }
