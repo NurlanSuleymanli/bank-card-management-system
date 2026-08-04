@@ -148,6 +148,12 @@ public class CardService {
 
         CardEntity card = cardRepository.findById(cardId).orElseThrow(()-> new CardNotFoundException("Card not found!"));
 
+        if (card.getExpiryDate().isBefore(LocalDate.now())) {
+            card.setStatus(Status.EXPIRED);
+            cardRepository.save(card);
+            throw new UnsupportedCardOperationException("Card has expired!");
+        }
+
         if(card.getStatus()==Status.ACTIVE) {
 
             if (card.getCardType() == CardType.DEBIT) {
