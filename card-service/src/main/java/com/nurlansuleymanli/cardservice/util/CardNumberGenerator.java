@@ -20,7 +20,7 @@ public class CardNumberGenerator {
 
     public static String generateCvv(){
 
-        return String.valueOf(random.nextInt(0,1000));
+        return String.format("%03d", random.nextInt(1000));
 
     }
 
