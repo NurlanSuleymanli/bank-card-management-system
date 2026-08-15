@@ -212,4 +212,16 @@ public class CardService {
                 .build();
     }
 
+    public void closeCard(Long cardId){
+        CardEntity card = cardRepository.findById(cardId)
+                .orElseThrow(()-> new CardNotFoundException("Card not found!"));
+
+        if (card.getStatus() == Status.CLOSED) {
+            throw new UnsupportedCardOperationException("Card is already closed!");
+        }
+
+        card.setStatus(Status.CLOSED);
+        cardRepository.save(card);
+    }
+
 }

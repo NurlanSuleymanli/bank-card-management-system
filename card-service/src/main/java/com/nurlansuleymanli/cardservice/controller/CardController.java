@@ -71,4 +71,10 @@ public class CardController {
         return ResponseEntity.ok(cardService.deposit(cardId,request));
     }
 
+    @PatchMapping("/{cardId}/close")
+    public ResponseEntity<Void> closeCard(@PathVariable Long cardId){
+        cardService.closeCard(cardId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
