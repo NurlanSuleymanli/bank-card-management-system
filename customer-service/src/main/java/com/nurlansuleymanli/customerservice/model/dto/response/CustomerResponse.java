@@ -1,5 +1,6 @@
 package com.nurlansuleymanli.customerservice.model.dto.response;
 
+import com.nurlansuleymanli.customerservice.model.enums.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -20,4 +21,6 @@ public class CustomerResponse {
     String email;
 
     String phoneNumber;
+
+    Status status;
 }
