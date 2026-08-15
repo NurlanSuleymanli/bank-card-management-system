@@ -54,4 +54,9 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.deleteCustomer(id));
     }
 
+    @PatchMapping("/customers/{id}/block")
+    public ResponseEntity<CustomerResponse> blockCustomer(@PathVariable Long id){
+        return ResponseEntity.ok(customerService.blockCustomer(id));
+    }
+
 }

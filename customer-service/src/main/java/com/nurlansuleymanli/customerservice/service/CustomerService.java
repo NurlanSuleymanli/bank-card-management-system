@@ -93,4 +93,14 @@ public class CustomerService {
         return customerMapper.toCustomerResponse(customer);
     }
 
+    public CustomerResponse blockCustomer(Long id){
+        CustomerEntity customer = customerRepository.findByIdAndStatus(id,Status.ACTIVE).orElseThrow(()->new CustomerNotFoundException("Customer not found or customer is blocked or inactive!"));
+
+        customer.setStatus(Status.BLOCKED);
+
+        customerRepository.save(customer);
+
+        return customerMapper.toCustomerResponse(customer);
+    }
+
 }
