@@ -2,6 +2,7 @@ package com.nurlansuleymanli.transactionservice.controller;
 
 import com.nurlansuleymanli.transactionservice.model.dto.request.TransactionRequest;
 import com.nurlansuleymanli.transactionservice.model.dto.response.TransactionResponse;
+import com.nurlansuleymanli.transactionservice.model.enums.TransactionStatus;
 import com.nurlansuleymanli.transactionservice.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -37,6 +38,13 @@ public class TransactionController {
     @GetMapping("/{id}")
     public ResponseEntity<TransactionResponse> getTransaction(@PathVariable Long id){
         return ResponseEntity.ok(transactionService.getTransaction(id));
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<Void> setStatus(@PathVariable Long id,
+                                          @RequestBody @Valid TransactionStatus transactionStatus){
+        transactionService.setStatus(id,transactionStatus);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/card/{cardId}")

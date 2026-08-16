@@ -52,6 +52,13 @@ public class TransactionService {
 
     }
 
+    public void setStatus(Long id, TransactionStatus transactionStatus){
+        TransactionEntity transactionEntity = transactionRepository.findById(id)
+                .orElseThrow(()->new TransactionNotFoundException("Transaction not found!"));
+        transactionEntity.setStatus(transactionStatus);
+        transactionRepository.save(transactionEntity);
+    }
+
     public Page<TransactionResponse> getCardTransactions(Long cardId, int page, int size){
 
         Pageable pageable = PageRequest.of(page,size);
