@@ -2,6 +2,7 @@ package com.nurlansuleymanli.cardservice.service;
 
 
 import com.nurlansuleymanli.cardservice.client.CustomerServiceClient;
+import com.nurlansuleymanli.cardservice.client.TransactionServiceClient;
 import com.nurlansuleymanli.cardservice.entity.CardEntity;
 import com.nurlansuleymanli.cardservice.exception.CardLimitExceededException;
 import com.nurlansuleymanli.cardservice.exception.CardNotFoundException;
@@ -11,10 +12,12 @@ import com.nurlansuleymanli.cardservice.mapper.CardMapper;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CardDepositRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CardPaymentRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
+import com.nurlansuleymanli.cardservice.modul.dto.request.TransactionRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.response.*;
 import com.nurlansuleymanli.cardservice.modul.enums.CardType;
 import com.nurlansuleymanli.cardservice.modul.enums.PaymentStatus;
 import com.nurlansuleymanli.cardservice.modul.enums.Status;
+import com.nurlansuleymanli.cardservice.modul.enums.TransactionType;
 import com.nurlansuleymanli.cardservice.repository.CardRepository;
 import com.nurlansuleymanli.cardservice.util.CardNumberGenerator;
 import lombok.AccessLevel;
@@ -37,6 +40,7 @@ public class CardService {
 
     PasswordEncoder passwordEncoder;
     CustomerServiceClient serviceClient;
+    TransactionServiceClient transactionServiceClient;
     CardRepository cardRepository;
     CardMapper cardMapper;
 
@@ -147,6 +151,16 @@ public class CardService {
     public CardPaymentResponse payment(Long cardId, CardPaymentRequest request){
 
         CardEntity card = cardRepository.findById(cardId).orElseThrow(()-> new CardNotFoundException("Card not found!"));
+
+        TransactionRequest transactionRequest = TransactionRequest.builder()
+                .cardId(cardId)
+                .amount(request.getAmount())
+                .type(TransactionType.PAYMENT)
+                .description("Payment")
+                .transactionDate(LocalDateTime.now())
+                .build();
+
+        transactionServiceClient.createTransaction(transactionRequest);
 
         if (card.getExpiryDate().isBefore(LocalDate.now())) {
             card.setStatus(Status.EXPIRED);
