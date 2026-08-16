@@ -160,7 +160,7 @@ public class CardService {
                 .transactionDate(LocalDateTime.now())
                 .build();
 
-        transactionServiceClient.createTransaction(transactionRequest);
+        TransactionResponse transactionResponse = transactionServiceClient.createTransaction(transactionRequest);
 
         if (card.getExpiryDate().isBefore(LocalDate.now())) {
             card.setStatus(Status.EXPIRED);
