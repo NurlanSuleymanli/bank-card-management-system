@@ -1,6 +1,7 @@
 package com.nurlansuleymanli.cardservice.client;
 
 import com.nurlansuleymanli.cardservice.modul.dto.request.TransactionRequest;
+import com.nurlansuleymanli.cardservice.modul.dto.response.TransactionResponse;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface TransactionServiceClient {
 
 @PostMapping
-     void createTransaction(@RequestBody @Valid TransactionRequest request);
+TransactionResponse createTransaction(@RequestBody @Valid TransactionRequest request);
 
 }
