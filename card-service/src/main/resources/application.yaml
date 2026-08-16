@@ -21,4 +21,5 @@ server:
 feign:
   client:
     config:
-      url: localhost:8081/api/v1
+      transaction-url: localhost:8083/api/v1/transactions
+      customer-url: localhost:8081/api/v1

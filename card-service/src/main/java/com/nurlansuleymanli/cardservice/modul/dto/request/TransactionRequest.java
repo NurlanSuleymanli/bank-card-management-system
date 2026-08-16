@@ -1,6 +1,7 @@
 package com.nurlansuleymanli.cardservice.modul.dto.request;
 
 
+import com.nurlansuleymanli.cardservice.modul.enums.TransactionType;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
