@@ -215,12 +215,24 @@ public class CardService {
 
         CardEntity card = cardRepository.findById(cardId).orElseThrow(()-> new CardNotFoundException("Card not found!"));
 
+        TransactionRequest transactionRequest = TransactionRequest.builder()
+                .cardId(cardId)
+                .amount(request.getAmount())
+                .type(TransactionType.TOP_UP)
+                .description("Deposit")
+                .transactionDate(LocalDateTime.now())
+                .build();
+
+        TransactionResponse transactionResponse = transactionServiceClient.createTransaction(transactionRequest);
+
         if(card.getStatus()!=Status.ACTIVE){
+            transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.FAILED);
             throw new UnsupportedCardOperationException("Deposit is only made through active cards!");
         }
 
         card.setBalance(card.getBalance().add(request.getAmount()));
         cardRepository.save(card);
+        transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.SUCCESS);
 
         return CardDepositResponse.builder()
                 .message("Balance successfully topped up!")
