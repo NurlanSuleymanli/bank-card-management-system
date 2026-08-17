@@ -214,7 +214,6 @@ public class CardService {
     public CardDepositResponse deposit(Long cardId, CardDepositRequest request){
 
         CardEntity card = cardRepository.findById(cardId).orElseThrow(()-> new CardNotFoundException("Card not found!"));
-
         TransactionRequest transactionRequest = TransactionRequest.builder()
                 .cardId(cardId)
                 .amount(request.getAmount())
@@ -224,6 +223,13 @@ public class CardService {
                 .build();
 
         TransactionResponse transactionResponse = transactionServiceClient.createTransaction(transactionRequest);
+
+        if (card.getExpiryDate().isBefore(LocalDate.now())) {
+            card.setStatus(Status.EXPIRED);
+            cardRepository.save(card);
+            transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.FAILED);
+            throw new UnsupportedCardOperationException("Card has expired!");
+        }
 
         if(card.getStatus()!=Status.ACTIVE){
             transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.FAILED);
