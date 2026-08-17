@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "transaction-service" , url = "${feign.client.config.transaction-url")
+@FeignClient(name = "transaction-service" , url = "${feign.client.config.transaction-url}")
 public interface TransactionServiceClient {
 
 @PostMapping

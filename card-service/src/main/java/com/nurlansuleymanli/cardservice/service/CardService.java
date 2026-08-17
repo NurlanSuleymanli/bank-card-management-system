@@ -14,10 +14,7 @@ import com.nurlansuleymanli.cardservice.modul.dto.request.CardPaymentRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.CreateCardRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.request.TransactionRequest;
 import com.nurlansuleymanli.cardservice.modul.dto.response.*;
-import com.nurlansuleymanli.cardservice.modul.enums.CardType;
-import com.nurlansuleymanli.cardservice.modul.enums.PaymentStatus;
-import com.nurlansuleymanli.cardservice.modul.enums.Status;
-import com.nurlansuleymanli.cardservice.modul.enums.TransactionType;
+import com.nurlansuleymanli.cardservice.modul.enums.*;
 import com.nurlansuleymanli.cardservice.repository.CardRepository;
 import com.nurlansuleymanli.cardservice.util.CardNumberGenerator;
 import lombok.AccessLevel;
@@ -165,6 +162,7 @@ public class CardService {
         if (card.getExpiryDate().isBefore(LocalDate.now())) {
             card.setStatus(Status.EXPIRED);
             cardRepository.save(card);
+            transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.FAILED);
             throw new UnsupportedCardOperationException("Card has expired!");
         }
 
@@ -172,11 +170,13 @@ public class CardService {
 
             if (card.getCardType() == CardType.DEBIT) {
                 if (card.getBalance().compareTo(request.getAmount()) < 0) {
+                    transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.FAILED);
                     throw new UnsupportedCardOperationException("The payment amount is more than the balance!");
                 }
 
                 card.setBalance(card.getBalance().subtract(request.getAmount()));
                 cardRepository.save(card);
+                transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.SUCCESS);
                 return CardPaymentResponse.builder()
                         .message("The payment was successfully carried out!")
                         .status(PaymentStatus.SUCCESS)
@@ -186,11 +186,13 @@ public class CardService {
             }
             if (card.getCardType() == CardType.CREDIT) {
                 if (card.getCreditLimit().compareTo(request.getAmount()) < 0) {
+                    transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.FAILED);
                     throw new UnsupportedCardOperationException("Insufficient credit limit!");
                 }
                 card.setBalance(card.getBalance().subtract(request.getAmount()));
                 card.setCreditLimit(card.getCreditLimit().subtract(request.getAmount()));
                 cardRepository.save(card);
+                transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.SUCCESS);
                 return CardPaymentResponse.builder()
                         .message("The payment was successfully carried out!")
                         .status(PaymentStatus.SUCCESS)
@@ -199,6 +201,7 @@ public class CardService {
             }
         }
         else{
+            transactionServiceClient.setStatus(transactionResponse.getId(),TransactionStatus.FAILED);
             throw new UnsupportedCardOperationException("Payment is only made through active cards!");
         }
             return CardPaymentResponse.builder()
