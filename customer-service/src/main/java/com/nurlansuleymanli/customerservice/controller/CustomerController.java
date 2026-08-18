@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Card Management System — Control Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: rgba(21, 30, 49, 0.7);
+      --bg-card-hover: rgba(30, 42, 69, 0.8);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(99, 102, 241, 0.4);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-glow: rgba(99, 102, 241, 0.25);
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-main: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+      color: var(--text-main);
+      font-family: var(--font-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      backdrop-filter: blur(12px);
+      background: rgba(9, 13, 22, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent-cyan));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .brand-title h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-title p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .service-indicators {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+
+    .nav-tabs {
+      display: flex;
+      padding: 0.75rem 2rem;
+      gap: 0.5rem;
+      background: rgba(15, 23, 42, 0.5);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .card-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-panel-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-family: var(--font-main);
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .btn {
+      padding: 0.7rem 1.4rem;
+      border-radius: 10px;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: white;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-emerald {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+
+    .btn-rose {
+      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      color: white;
+    }
+
+    .btn-amber {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      border-radius: 6px;
+    }
+
+    /* Workflow Stepper */
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .stepper::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: var(--border-color);
+      z-index: 0;
+    }
+
+    .step {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .step-number {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-dark);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+
+    .step.active .step-number {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .step-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .step.active .step-title {
+      color: var(--text-main);
+    }
+
+    /* Live Terminal Log */
+    .terminal-panel {
+      background: rgba(5, 8, 15, 0.95);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #38bdf8;
+      max-height: 280px;
+      overflow-y: auto;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .log-line {
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+      word-break: break-all;
+    }
+
+    .log-time { color: var(--text-muted); }
+    .log-method { font-weight: 700; color: var(--accent-cyan); }
+    .log-status-200, .log-status-201 { color: var(--accent-emerald); font-weight: 700; }
+    .log-status-400, .log-status-404, .log-status-500 { color: var(--accent-rose); font-weight: 700; }
+    .log-body { color: #cbd5e1; font-size: 0.75rem; margin-top: 2px; }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-danger { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.3); }
+    .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    /* Visual Credit Card Component */
+    .credit-card-preview {
+      background: linear-gradient(135deg, #1e1b4b, #312e81, #4338ca);
+      border-radius: 16px;
+      padding: 1.5rem;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(49, 46, 129, 0.4);
+      margin-top: 1rem;
+    }
+
+    .credit-card-preview::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .card-chip {
+      width: 40px;
+      height: 30px;
+      background: linear-gradient(135deg, #fef08a, #ca8a04);
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-num {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">💳</div>
+      <div class="brand-title">
+        <h1>Bank Management System</h1>
+        <p>Interactive Control Dashboard & E2E Tester</p>
+      </div>
+    </div>
+    <div class="service-indicators">
+      <div class="status-badge"><span class="dot"></span> Customer (8081)</div>
+      <div class="status-badge"><span class="dot"></span> Card (8082)</div>
+      <div class="status-badge"><span class="dot"></span> Transaction (8083)</div>
+    </div>
+  </header>
+
+  <nav class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('e2e')">⚡ 1-Click E2E Flow</button>
+    <button class="tab-btn" onclick="switchTab('customers')">🧑 Müştərilər (Customer Service)</button>
+    <button class="tab-btn" onclick="switchTab('cards')">💳 Kartlar (Card Service)</button>
+    <button class="tab-btn" onclick="switchTab('transactions')">📊 Tranzaksiyalar (Transaction Service)</button>
+  </nav>
+
+  <main>
+
+    <!-- TAB 1: E2E AUTOMATED WORKFLOW -->
+    <div id="tab-e2e" class="tab-content active">
+      <div class="card-panel">
+        <div class="card-panel-header">
+          <div class="card-panel-title">⚡ End-to-End Əməliyyat Sınağı (Workflow Tester)</div>
+          <button class="btn btn-secondary btn-sm" onclick="autoFillDemo()">✨ Auto Fill Demo Data</button>
+        </div>
+
+        <div class="stepper">
+          <div class="step active" id="step-1">
+            <div class="step-number">1</div>
+            <div class="step-title">1. Müştəri Yarat</div>
+          </div>
+          <div class="step" id="step-2">
+            <div class="step-number">2</div>
+            <div class="step-title">2. Kart Çıxart</div>
+          </div>
+          <div class="step" id="step-3">
+            <div class="step-number">3</div>
+            <div class="step-title">3. Depozit / Ödəniş Et</div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <!-- Step 1 Form -->
+          <div style="background: rgba(255,255,255,0.02); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+            <h4 style="margin-bottom: 1rem; color: var(--accent-cyan);">1. Müştəri Məlumatları</h4>
+            <div class="form-group">
+              <label class="form-label">Ad</label>
+              <input type="text" id="w-fn" class="form-input" placeholder="Nurlan">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Soyad</label>
+              <input type="text" id="w-ln" class="form-input" placeholder="Suleymanli">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" id="w-email" class="form-input" placeholder="nurlan@example.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Telefon</label>
+              <input type="text" id="w-phone" class="form-input" placeholder="+994501234567">
+            </div>
+            <div class="form-group">
+              <label class="form-label">PIN</label>
+              <input type="text" id="w-pin" class="form-input" placeholder="1234567">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="runStep1()">1. Müştərini Yarat (POST 8081)</button>
+            <div id="step1-res" style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--accent-emerald);"></div>
+          </div>
+
+          <!-- Step 2 Form -->
+          <div style="background: rgba(255,255,255,0.02); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+            <h4 style="margin-bottom: 1rem; color: var(--accent-amber);">2. Kart Şərtləri</h4>
+            <div class="form-group">
+              <label class="form-label">Müştəri ID (Auto-filled)</label>
+              <input type="number" id="w-cid" class="form-input" placeholder="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kart Növü</label>
+              <select id="w-ctype" class="form-select">
+                <option value="DEBIT">DEBIT (Debet)</option>
+                <option value="CREDIT">CREDIT (Kredit 30k Limit)</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 6.8rem;" onclick="runStep2()">2. Kartı Generasiya Et (POST 8082)</button>
+            <div id="step2-res" style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--accent-emerald);"></div>
+          </div>
+
+          <!-- Step 3 Form -->
+          <div style="background: rgba(255,255,255,0.02); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+            <h4 style="margin-bottom: 1rem; color: var(--accent-emerald);">3. Balans Əməliyyatı</h4>
+            <div class="form-group">
+              <label class="form-label">Kart ID (Auto-filled)</label>
+              <input type="number" id="w-cardid" class="form-input" placeholder="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Məbləğ (AZN)</label>
+              <input type="number" id="w-amount" class="form-input" value="150.00" step="0.01">
+            </div>
+            <div style="display: flex; gap: 0.5rem; margin-top: 4.8rem;">
+              <button class="btn btn-emerald" style="flex: 1;" onclick="runStep3Deposit()"> Depozit Et (+)</button>
+              <button class="btn btn-rose" style="flex: 1;" onclick="runStep3Payment()"> Ödəniş Et (-)</button>
+            </div>
+            <div id="step3-res" style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--accent-emerald);"></div>
+          </div>
+        </div>
+
+        <!-- Result Card Preview -->
+        <div id="result-card-container" style="display: none;">
+          <div class="credit-card-preview">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="card-chip"></div>
+              <div id="card-type-badge" style="font-weight: 800; font-size: 0.9rem; letter-spacing: 1px;">DEBIT</div>
+            </div>
+            <div class="card-num" id="card-number-display">5411 7388 **** ****</div>
+            <div class="card-meta">
+              <div>
+                <div style="font-size: 0.65rem; opacity: 0.7;">Kart Sahibi ID</div>
+                <div id="card-owner-display" style="font-size: 0.9rem; font-weight: 700;">Customer #1</div>
+              </div>
+              <div>
+                <div style="font-size: 0.65rem; opacity: 0.7;">Cari Balans</div>
+                <div id="card-balance-display" style="font-size: 1rem; font-weight: 800; color: #4ade80;">0.00 AZN</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: CUSTOMERS -->
+    <div id="tab-customers" class="tab-content">
+      <div class="grid-2">
+        <div class="card-panel">
+          <div class="card-panel-header">
+            <div class="card-panel-title">➕ Yeni Müştəri Qeydiyyatı</div>
+          </div>
+          <form id="cust-form" onsubmit="createCustomer(event)">
+            <div class="form-group">
+              <label class="form-label">Ad</label>
+              <input type="text" id="c-fn" class="form-input" required placeholder="Əli">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Soyad</label>
+              <input type="text" id="c-ln" class="form-input" required placeholder="Məmmədov">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" id="c-email" class="form-input" required placeholder="ali@gmail.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Telefon (+994...)</label>
+              <input type="text" id="c-phone" class="form-input" required placeholder="+994551234567">
+            </div>
+            <div class="form-group">
+              <label class="form-label">PIN (7 simvol)</label>
+              <input type="text" id="c-pin" class="form-input" required placeholder="7777777">
+            </div>
+            <button type="submit" class="btn btn-primary">Müştərini Yarat</button>
+          </form>
+        </div>
+
+        <div class="card-panel">
+          <div class="card-panel-header">
+            <div class="card-panel-title">📋 Müştərilərin Siyahısı</div>
+            <button class="btn btn-secondary btn-sm" onclick="loadCustomers()">🔄 Yenilə</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Ad Soyad</th>
+                  <th>Email</th>
+                  <th>Telefon</th>
+                  <th>Əməliyyatlar</th>
+                </tr>
+              </thead>
+              <tbody id="cust-table-body">
+                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Məlumat yüklənməyib. 'Yenilə' düyməsini sıxın.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: CARDS -->
+    <div id="tab-cards" class="tab-content">
+      <div class="grid-2">
+        <div class="card-panel">
+          <div class="card-panel-header">
+            <div class="card-panel-title">💳 Kart İdarəetmə Paneli</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kart ID daxil edin</label>
+            <input type="number" id="card-action-id" class="form-input" placeholder="1">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem;">
+            <button class="btn btn-secondary" onclick="actionGetCard()">🔍 Kartı Gətir</button>
+            <button class="btn btn-amber" onclick="actionBlockCard()">🔒 Blokla (Block)</button>
+            <button class="btn btn-emerald" onclick="actionActivateCard()">🔓 Aktivləşdir (Activate)</button>
+            <button class="btn btn-primary" onclick="actionRefreshLimit()">🔄 Limit Sıfırla (30k)</button>
+            <button class="btn btn-rose" style="grid-column: span 2;" onclick="actionCloseCard()">❌ Kartı Bağla (Close)</button>
+          </div>
+          <div id="card-action-output" style="margin-top: 1rem;"></div>
+        </div>
+
+        <div class="card-panel">
+          <div class="card-panel-header">
+            <div class="card-panel-title">👤 Müştərinin Kartları</div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+            <input type="number" id="cust-cards-search-id" class="form-input" placeholder="Müştəri ID daxil edin">
+            <button class="btn btn-primary" onclick="loadCustomerCards()">Axtar</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Kart ID</th>
+                  <th>Nömrə</th>
+                  <th>Növ</th>
+                  <th>Balans</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="cust-cards-table">
+                <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Müştəri ID yazın və Axtar düyməsini sıxın.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: TRANSACTIONS -->
+    <div id="tab-transactions" class="tab-content">
+      <div class="card-panel">
+        <div class="card-panel-header">
+          <div class="card-panel-title">📊 Tranzaksiya Tarixçəsi (Transaction Service)</div>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: flex-end; margin-bottom: 1.5rem;">
+          <div style="flex:1;">
+            <label class="form-label">Kart ID</label>
+            <input type="number" id="tx-card-id" class="form-input" placeholder="1">
+          </div>
+          <button class="btn btn-primary" onclick="loadTransactions()">Siyahını Gətir</button>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Kart ID</th>
+                <th>Məbləğ</th>
+                <th>Növ</th>
+                <th>Status</th>
+                <th>Təsvir</th>
+                <th>Tarix</th>
+              </tr>
+            </thead>
+            <tbody id="tx-table-body">
+              <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Kart ID yazaraq tranzaksiyaları sorğulayın.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE TERMINAL LOGS -->
+    <div class="card-panel" style="margin-top: 1rem;">
+      <div class="card-panel-header">
+        <div class="card-panel-title" style="font-family: var(--font-mono);">📡 Real-Time Microservice API Console</div>
+        <button class="btn btn-secondary btn-sm" onclick="clearLogs()">Terminalı Təmizlə</button>
+      </div>
+      <div class="terminal-panel" id="terminal-logs">
+        <div class="log-line"><span class="log-time">[SYSTEM]</span> Ready to capture microservice requests...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const CUSTOMER_URL = "http://localhost:8081/api/v1";
+    const CARD_URL = "http://localhost:8082/api/v1/cards";
+    const TX_URL = "http://localhost:8083/api/v1/transactions";
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+
+      if (tabId === 'customers') loadCustomers();
+    }
+
+    function logTerminal(method, url, status, body) {
+      const logs = document.getElementById('terminal-logs');
+      const time = new Date().toLocaleTimeString();
+      const statusClass = status >= 200 && status < 300 ? `log-status-${status}` : 'log-status-400';
+      
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.innerHTML = `
+        <span class="log-time">[${time}]</span> 
+        <span class="log-method">${method}</span> ${url} 
+        <span class="${statusClass}">${status}</span>
+        <div class="log-body">${JSON.stringify(body)}</div>
+      `;
+      logs.prepend(line);
+    }
+
+    function clearLogs() {
+      document.getElementById('terminal-logs').innerHTML = '<div class="log-line"><span class="log-time">[SYSTEM]</span> Console cleared.</div>';
+    }
+
+    function autoFillDemo() {
+      const rand = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('w-fn').value = "Nurlan";
+      document.getElementById('w-ln').value = "Suleymanli";
+      document.getElementById('w-email').value = `test${rand}@gmail.com`;
+      document.getElementById('w-phone').value = `+99450${rand}123`;
+      document.getElementById('w-pin').value = "1234567";
+    }
+
+    // WORKFLOW STEP 1
+    async function runStep1() {
+      const payload = {
+        firstName: document.getElementById('w-fn').value || "Nurlan",
+        lastName: document.getElementById('w-ln').value || "Suleymanli",
+        email: document.getElementById('w-email').value || `nurlan${Date.now()}@mail.com`,
+        phoneNumber: document.getElementById('w-phone').value || "+994507778899",
+        pin: document.getElementById('w-pin').value || "1234567"
+      };
+
+      try {
+        const res = await fetch(`${CUSTOMER_URL}/customers`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        logTerminal('POST', `${CUSTOMER_URL}/customers`, res.status, data);
+
+        if (res.ok) {
+          document.getElementById('w-cid').value = data.id;
+          document.getElementById('step1-res').innerText = `✅ Müştəri Yaradıldı! ID: ${data.id}`;
+          document.getElementById('step-1').classList.add('active');
+          document.getElementById('step-2').classList.add('active');
+        } else {
+          document.getElementById('step1-res').innerText = `❌ Xəta: ${data.message || JSON.stringify(data)}`;
+        }
+      } catch (err) {
+        document.getElementById('step1-res').innerText = `❌ Şəbəkə Xətası (Customer Service:8081 işləyir?)`;
+      }
+    }
+
+    // WORKFLOW STEP 2
+    async function runStep2() {
+      const cid = document.getElementById('w-cid').value;
+      if (!cid) return alert("Əvvəlcə Müştəri ID yazın və ya Step 1-i icra edin!");
+
+      const payload = {
+        customerId: parseInt(cid),
+        cardType: document.getElementById('w-ctype').value
+      };
+
+      try {
+        const res = await fetch(CARD_URL, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        logTerminal('POST', CARD_URL, res.status, data);
+
+        if (res.ok) {
+          document.getElementById('w-cardid').value = data.id;
+          document.getElementById('step2-res').innerText = `✅ Kart Generasiya Olundu! Card ID: ${data.id}`;
+          document.getElementById('step-3').classList.add('active');
+
+          // Preview Card
+          document.getElementById('result-card-container').style.display = 'block';
+          document.getElementById('card-number-display').innerText = data.cardNumber.replace(/(.{4})/g, '$1 ').trim();
+          document.getElementById('card-owner-display').innerText = `Customer #${data.customerId}`;
+          document.getElementById('card-balance-display').innerText = `${data.balance} AZN`;
+          document.getElementById('card-type-badge').innerText = data.cardType;
+        } else {
+          document.getElementById('step2-res').innerText = `❌ Xəta: ${data.message || JSON.stringify(data)}`;
+        }
+      } catch (err) {
+        document.getElementById('step2-res').innerText = `❌ Şəbəkə Xətası (Card Service:8082 işləyir?)`;
+      }
+    }
+
+    // WORKFLOW STEP 3 - DEPOSIT
+    async function runStep3Deposit() {
+      const cardId = document.getElementById('w-cardid').value;
+      const amount = parseFloat(document.getElementById('w-amount').value);
+      if (!cardId) return alert("Kart ID yoxdur!");
+
+      try {
+        const res = await fetch(`${CARD_URL}/${cardId}/deposit`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ amount: amount })
+        });
+        const data = await res.json();
+        logTerminal('POST', `${CARD_URL}/${cardId}/deposit`, res.status, data);
+
+        if (res.ok) {
+          document.getElementById('step3-res').innerText = `✅ Depozit Uğurludur! Yeni Balans: ${data.newBalance} AZN`;
+          document.getElementById('card-balance-display').innerText = `${data.newBalance} AZN`;
+        } else {
+          document.getElementById('step3-res').innerText = `❌ Xəta: ${data.message || JSON.stringify(data)}`;
+        }
+      } catch (err) {
+        document.getElementById('step3-res').innerText = `❌ Şəbəkə xətası!`;
+      }
+    }
+
+    // WORKFLOW STEP 3 - PAYMENT
+    async function runStep3Payment() {
+      const cardId = document.getElementById('w-cardid').value;
+      const amount = parseFloat(document.getElementById('w-amount').value);
+      if (!cardId) return alert("Kart ID yoxdur!");
+
+      try {
+        const res = await fetch(`${CARD_URL}/${cardId}/payment`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ amount: amount })
+        });
+        const data = await res.json();
+        logTerminal('POST', `${CARD_URL}/${cardId}/payment`, res.status, data);
+
+        if (res.ok) {
+          document.getElementById('step3-res').innerText = `✅ Ödəniş Uğurludur! ${data.message}`;
+        } else {
+          document.getElementById('step3-res').innerText = `❌ Xəta: ${data.message || JSON.stringify(data)}`;
+        }
+      } catch (err) {
+        document.getElementById('step3-res').innerText = `❌ Şəbəkə xətası!`;
+      }
+    }
+
+    // CUSTOMERS LIST
+    async function loadCustomers() {
+      try {
+        const res = await fetch(`${CUSTOMER_URL}/customers?page=0&size=20`);
+        const data = await res.json();
+        logTerminal('GET', `${CUSTOMER_URL}/customers`, res.status, data);
+
+        const tbody = document.getElementById('cust-table-body');
+        tbody.innerHTML = '';
+
+        const list = data.content || data;
+        if (!list || list.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Müştəri tapılmadı.</td></tr>';
+          return;
+        }
+
+        list.forEach(c => {
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>#${c.id}</strong></td>
+              <td>${c.firstName} ${c.lastName}</td>
+              <td>${c.email}</td>
+              <td>${c.phoneNumber}</td>
+              <td>
+                <button class="btn btn-secondary btn-sm" onclick="selectCustForCard(${c.id})">💳 Kart Aç</button>
+              </td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function selectCustForCard(id) {
+      switchTab('e2e');
+      document.getElementById('w-cid').value = id;
+    }
+
+    // CARD ACTIONS
+    async function actionGetCard() {
+      const id = document.getElementById('card-action-id').value;
+      if (!id) return alert("Kart ID daxil edin");
+
+      const res = await fetch(`${CARD_URL}/${id}`);
+      const data = await res.json();
+      logTerminal('GET', `${CARD_URL}/${id}`, res.status, data);
+
+      document.getElementById('card-action-output').innerHTML = `
+        <pre style="background:rgba(0,0,0,0.4); padding:1rem; border-radius:8px; font-size:0.8rem;">${JSON.stringify(data, null, 2)}</pre>
+      `;
+    }
+
+    async function actionBlockCard() {
+      const id = document.getElementById('card-action-id').value;
+      const res = await fetch(`${CARD_URL}/${id}/block`, { method: 'PATCH' });
+      logTerminal('PATCH', `${CARD_URL}/${id}/block`, res.status, {});
+      alert(res.ok ? "Kart Bloklandı!" : "Xəta baş verdi");
+    }
+
+    async function actionActivateCard() {
+      const id = document.getElementById('card-action-id').value;
+      const res = await fetch(`${CARD_URL}/${id}/activate`, { method: 'PATCH' });
+      logTerminal('PATCH', `${CARD_URL}/${id}/activate`, res.status, {});
+      alert(res.ok ? "Kart Aktivləşdirildi!" : "Xəta baş verdi");
+    }
+
+    async function actionRefreshLimit() {
+      const id = document.getElementById('card-action-id').value;
+      const res = await fetch(`${CARD_URL}/${id}/limit`, { method: 'PATCH' });
+      logTerminal('PATCH', `${CARD_URL}/${id}/limit`, res.status, {});
+      alert(res.ok ? "Limit Refresh olundu (30,000 AZN)!" : "Xəta baş verdi");
+    }
+
+    async function actionCloseCard() {
+      const id = document.getElementById('card-action-id').value;
+      const res = await fetch(`${CARD_URL}/${id}/close`, { method: 'PATCH' });
+      logTerminal('PATCH', `${CARD_URL}/${id}/close`, res.status, {});
+      alert(res.ok ? "Kart Bağlandı (CLOSED)!" : "Xəta baş verdi");
+    }
+
+    // TRANSACTIONS LIST
+    async function loadTransactions() {
+      const cardId = document.getElementById('tx-card-id').value;
+      if (!cardId) return alert("Kart ID yazın");
+
+      const res = await fetch(`${TX_URL}/card/${cardId}`);
+      const data = await res.json();
+      logTerminal('GET', `${TX_URL}/card/${cardId}`, res.status, data);
+
+      const tbody = document.getElementById('tx-table-body');
+      tbody.innerHTML = '';
+
+      const list = data.content || data;
+      if (!list || list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Bu kart üzrə tranzaksiya tapılmadı.</td></tr>';
+        return;
+      }
+
+      list.forEach(t => {
+        let badgeClass = 'badge-warning';
+        if (t.status === 'SUCCESS') badgeClass = 'badge-success';
+        if (t.status === 'FAILED') badgeClass = 'badge-danger';
+
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>#${t.id}</strong></td>
+            <td>Card #${t.cardId}</td>
+            <td><strong>${t.amount} AZN</strong></td>
+            <td><span class="badge" style="background:rgba(255,255,255,0.05);">${t.type}</span></td>
+            <td><span class="badge ${badgeClass}">${t.status}</span></td>
+            <td>${t.description || '-'}</td>
+            <td>${t.transactionDate ? new Date(t.transactionDate).toLocaleString() : '-'}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // Auto load demo fill on start
+    autoFillDemo();
+  </script>
+</body>
+</html>
