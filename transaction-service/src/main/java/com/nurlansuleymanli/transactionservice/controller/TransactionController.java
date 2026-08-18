@@ -41,7 +41,7 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getTransaction(id));
     }
 
-    @PostMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Void> setStatus(@PathVariable Long id,
                                           @RequestBody @Valid TransactionStatus transactionStatus){
         transactionService.setStatus(id,transactionStatus);
