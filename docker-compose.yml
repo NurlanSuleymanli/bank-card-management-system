@@ -37,6 +37,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
     depends_on:
       - card-db
+      - customer-service
+      - transaction-service
 
   card-db:
     image: postgres:16-alpine
