@@ -43,7 +43,7 @@ public class TransactionController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> setStatus(@PathVariable Long id,
-                                          @RequestBody @Valid TransactionStatus transactionStatus){
+                                          @RequestParam TransactionStatus transactionStatus){
         transactionService.setStatus(id,transactionStatus);
         return ResponseEntity.noContent().build();
     }

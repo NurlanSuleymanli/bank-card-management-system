@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "transaction-service" , url = "${feign.client.config.transaction-url}")
 public interface TransactionServiceClient {
@@ -17,5 +18,5 @@ public interface TransactionServiceClient {
 TransactionResponse createTransaction(@RequestBody @Valid TransactionRequest request);
 
 @PatchMapping("/{id}")
-    void setStatus(@PathVariable Long id, @RequestBody @Valid TransactionStatus transactionStatus);
+    void setStatus(@PathVariable Long id, @RequestParam TransactionStatus transactionStatus);
 }
